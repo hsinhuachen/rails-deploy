@@ -105,7 +105,10 @@ passenger_ruby /home/hsinhua/.rvm/gems/ruby-2.5.3/wrappers/ruby;
 	bundle install
 	bundle exec cap install
 
-	
+### Sass re compile
+	rake assets:precompile
+
+
 #### Mac 本地 
 	cap production deploy
 
