@@ -20,7 +20,15 @@ Warning: Running `gem pristine --all` to regenerate your installed gemspecs (and
 	
 ### in `rescue in _decrypt': ActiveSupport::MessageEncryptor::InvalidMessage (ActiveSupport::MessageEncryptor::InvalidMessage)
 
+remove your credentials.yml.enc and master.key
 
 ### git: error: Pulling is not possible because you have unmerged files.
 	git reset --hard FETCH_HEAD
+
+### Make sure that `gem install nokogiri -v '1.10.4'` succeeds before bundling.
+	sudo apt-get install build-essential patch ruby-dev zlib1g-dev liblzma-dev
+
+	
+
+
 

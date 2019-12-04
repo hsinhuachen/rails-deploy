@@ -3,6 +3,7 @@
 ## Amazon Linux AMI 2018.03.0 (HVM), SSD Volume Type
 
 ### log ssh
+	chmod 400 keypair
 	ssh -i keypair ec2-user@ip
 
 ### 新增使用者
@@ -64,13 +65,14 @@ https://www.phusionpassenger.com/library/install/nginx/install/oss/rubygems_rvm/
 	sudo /etc/init.d/nginx start
 	sudo chown -R hsinhua:hsinhua /usr/share/nginx/html
 
+
 	gem install passenger
 	sudo yum remove nginx
 	sudo rm -rf /etc/nginx
 
 	passenger-install-nginx-module
-	rvmsudo passenger-config validate-install
-	rvmsudo passenger-memory-stats
+	rvm sudo passenger-config validate-install
+	rvm sudo passenger-memory-stats
 
 ### Rails Setting
 path: /usr/share/nginx/html
@@ -87,6 +89,38 @@ path: /usr/share/nginx/html
 ### Configuring Nginx and Passenger
 	passenger-config about ruby-command
 	passenger start -a 0.0.0.0 -p 3000 -d -e production
+
+	sudo nano /etc/nginx/sites-enabled/myapp.conf
+
+	server {
+	    listen 80;
+	    server_name ip;
+			
+	    root /var/www/app/oniondesign-web/public;
+			
+	    # Turn on Passenger
+	    passenger_enabled on;
+	    # passenger_ruby /path-to-ruby;
+			
+	    passenger_min_instances 1;
+				
+		location ~ ^/assets/ {
+		   expires 1y;
+		   add_header Cache-Control public;
+		   add_header ETag "";
+		   break;
+		}
+		
+		# second app
+		location ~ ^/onion(/.*|$) {
+            alias /var/www/shop/oniondesign-web/public$1;
+            passenger_base_uri /onion;
+            passenger_app_root /var/www/shop/oniondesign-web;
+            passenger_document_root /var/www/shop/oniondesign-web/public;
+            passenger_enabled on;
+        }
+	}
+
 
 	#root user
 	sudo nano /etc/nginx/nginx.conf
@@ -108,9 +142,18 @@ passenger_ruby /home/hsinhua/.rvm/gems/ruby-2.5.3/wrappers/ruby;
 ### Sass re compile
 	rake assets:precompile
 
-
 #### Mac 本地 
 	cap production deploy
+
+
+#### passenger 指令
+https://www.phusionpassenger.com/library/walkthroughs/basics/ruby/passenger_command.html
+
+- bundle exec passenger start
+- bundle exec passenger stop
+- passenger-config restart-app
+- rvmsudo passenger-memory-stats
+- passenger start -a 0.0.0.0 -p 3000 -d -e production
 
 
 
